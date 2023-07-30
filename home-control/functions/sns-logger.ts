@@ -1,13 +1,5 @@
-module.exports.handler = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: "Go Serverless v3.0! Your function executed successfully!",
-        input: event,
-      },
-      null,
-      2
-    ),
-  };
+import { SnsEvent } from "../types/SnsEvent";
+
+module.exports.handler = async (event: SnsEvent<any>) => {
+  console.info("EVENT\n" + JSON.stringify(event, null, 2));
 };
