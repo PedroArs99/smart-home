@@ -6,6 +6,9 @@ provider:
   region: eu-central-1
   runtime: nodejs18.x
 
+plugins:
+  - serverless-plugin-typescript
+
 functions:
   api:
     handler: index.handler
