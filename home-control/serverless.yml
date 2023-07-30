@@ -1,0 +1,15 @@
+service: home-control
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
