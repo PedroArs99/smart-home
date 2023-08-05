@@ -1,10 +1,10 @@
-export type SnsEvent<T> = {
+export type SnsEvent = {
   Records: {
     Sns: {
       Subject: string;
-      Message: T;
+      Message: string;
       Timestamp: Date;
       MessageAttributes: Map<string, any>;
     };
-  };
+  }[];
 };

@@ -5,19 +5,36 @@ provider:
   name: aws
   region: eu-central-1
   runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource:
+            - { "Fn::GetAtt": ["HomeRulesTable", "Arn" ] }
+        - Effect: Allow
+          Action:
+            - sqs:sendmessage
+          Resource:
+            - { "Fn::GetAtt": ["HomeControlRuleQueue", "Arn"]}
 
 plugins:
   - serverless-plugin-typescript
 
+package:
+  individually: true
+  
 functions:
-  api:
-    handler: index.handler
-    events:
-      - httpApi:
-          path: /
-          method: get
   sns-logger:
     handler: functions/sns-logger.handler
+    events:
+      - sns:
+          arn: !Ref HomeEventTopic
+          displayName: Home device event pipeline
+          topicName: HomeEvent
+  rule-trigger:
+    handler: functions/rule-trigger.handler
     events:
       - sns:
           arn: !Ref HomeEventTopic
@@ -30,3 +47,21 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: HomeEvent
+    HomeControlRuleQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: HomeControlRuleQueue
+    HomeRulesTable:
+          Type: AWS::DynamoDB::Table
+          Properties:
+            TableName: homeRules
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: S
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
