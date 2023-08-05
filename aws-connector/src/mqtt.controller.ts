@@ -7,7 +7,6 @@ import {
 } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
 import { SnsService } from './sns.service';
-import { trace } from 'console';
 
 @Controller()
 export class MqttController {

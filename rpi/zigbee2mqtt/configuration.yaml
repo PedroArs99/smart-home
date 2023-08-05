@@ -1,0 +1,19 @@
+# Let new devices join the zigbee network
+permit_join: true
+# MQTT Server config
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://mqtt:1883
+serial:
+  port: /dev/ttyUSB0
+frontend:
+  port: 8080
+# Let Zigbee2MQTT generate a new network key on first start
+advanced:
+  network_key: GENERATE
+  pan_id: GENERATE
+  # Optional: Zigbee extended pan ID (default: shown below)
+  ext_pan_id: [0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF]
+  # Optional: ZigBee channel, changing requires re-pairing of all devices. (Note: use a ZLL channel: 11, 15, 20, or 25 to avoid Problems)
+  # (default: 11)
+  channel: 25

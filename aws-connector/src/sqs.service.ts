@@ -2,6 +2,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Consumer } from 'sqs-consumer';
 import { MqttService } from './mqtt.service';
+import { ConfigService } from '@nestjs/config';
 
 type SqsMessage = {
   Body: string;
@@ -17,11 +18,13 @@ export class SqsService implements OnModuleDestroy {
   private logger = new Logger(SqsService.name);
   private consumer: Consumer;
 
-  constructor(private mqttService: MqttService) {
+  constructor(
+    configService: ConfigService,
+    private mqttService: MqttService,
+  ) {
     this.logger.log('SQS Consumer starting...');
     this.consumer = Consumer.create({
-      queueUrl:
-        'https://sqs.eu-central-1.amazonaws.com/584871003262/HomeControlRuleQueue',
+      queueUrl: configService.getOrThrow('SQS_QUEUE_URL'),
       handleMessage: async (message) => {
         this.forwardMessageToMqtt(message as SqsMessage);
       },

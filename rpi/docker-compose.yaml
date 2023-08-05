@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  aws-connector:
+    image: pedroars99/aws-connector:1.0.0
+    container_name: aws-connector
+    env_file:
+      - .env
+    restart: always
+
+  mqtt:
+    container_name: mqtt
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    restart: always
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    pull_policy: always
+    container_name: zigbee2mqtt
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - 8080:8080
+    restart: always
+    volumes:
+      - ./zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
