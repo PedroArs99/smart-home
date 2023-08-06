@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths: 
       - aws-connector/
+  workflow_dispatch:
 
 env:
   GITHUB_USERNAME: PedroArs99
