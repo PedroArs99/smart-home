@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_USERNAME: PedroArs99
+  GITHUB_USERNAME: pedroars99
 
 jobs:
   build:
