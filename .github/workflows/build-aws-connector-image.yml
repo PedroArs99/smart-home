@@ -35,4 +35,4 @@ jobs:
         context: ./aws-connector
         file: ./aws-connector/Dockerfile
         push: true
-        tags: $GITHUB_USERNAME/aws-connector:latest
+        tags: ${{GITHUB_USERNAME}}/aws-connector:latest
