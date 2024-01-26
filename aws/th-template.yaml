@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Termite Home
+
+Parameters:
+  UserData: 
+    Type: String
+
+Resources:
+  TermiteHomeSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Termite Home Instance Security Group (SSH)
+      GroupName: termite-home
+      SecurityGroupIngress: 
+        - Description: SSH
+          FromPort: 22
+          ToPort: 22
+          IpProtocol: tcp
+          CidrIp: '0.0.0.0/0'
+        - Description: MQTT
+          FromPort: 1883
+          ToPort: 1883
+          IpProtocol: tcp
+          CidrIp: '0.0.0.0/0'
+      Tags: 
+        - Key: Name
+          Value: termite-home
+
+  TermiteHomeInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: eu-central-1a
+      ImageId: ami-0fc02b454efabb390
+      InstanceType: t4g.nano
+      KeyName: th-instance
+      SecurityGroupIds:
+        - !Ref TermiteHomeSecurityGroup
+      UserData: 
+        !Ref UserData  
+      Tags:
+        - Key: Name
+          Value: termite-home
