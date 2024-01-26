@@ -5,9 +5,9 @@ sudo apt-get update
 
 sudo apt-get --assume-yes install mosquitto mosquitto-clients
 
-cat << EOS
+cat << EOS >> mosquitto.conf
 listener 1883
 allow_anonymous true
-EOS >> mosquitto.conf
+EOS
 
 mosquitto -c mosquitto.conf -d -p 1883
