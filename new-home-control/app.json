@@ -15,6 +15,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "home-control",
       "supportsTablet": true
     },
     "android": {
