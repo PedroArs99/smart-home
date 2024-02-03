@@ -3,7 +3,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import Navbar from "./app/layout/Navbar";
-import { BACKGROUND_COLOR } from "./app/config/colors";
+import { BACKGROUND_COLOR } from "./app/config/theme";
 
 export default function App() {
   return (
