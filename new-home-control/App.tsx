@@ -1,16 +1,14 @@
 import React from "react";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Image } from "react-native";
-
-const PlaceholderImage = require("./assets/images/background-image.png");
+import { StyleSheet, View } from "react-native";
+import Navbar from "./app/layout/Navbar";
+import { BACKGROUND_COLOR } from "./app/config/colors";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image source={PlaceholderImage} style={styles.image} />
-      </View>
+    <View id="app-root" style={styles.container}>
+      <Navbar />
 
       <StatusBar style="auto" />
     </View>
@@ -20,16 +18,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    borderRadius: 18,
-    width: 320,
-    height: 440,
-  },
-  imageContainer: {
-    flex: 1,
+
+    backgroundColor: BACKGROUND_COLOR,
   },
 });
