@@ -1,13 +1,6 @@
 version: '3.8'
 
 services:
-  aws-connector:
-    image: pedroars99/aws-connector:1.0.0
-    container_name: aws-connector
-    env_file:
-      - .env
-    restart: always
-
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt:latest
     pull_policy: always
