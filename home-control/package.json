@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.385.0",
-    "@aws-sdk/client-sqs": "^3.385.0",
-    "@aws-sdk/lib-dynamodb": "^3.385.0"
+    "@aws-sdk/lib-dynamodb": "^3.385.0",
+    "mqtt": "^5.3.5"
   }
 }

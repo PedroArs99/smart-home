@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { SnsEvent } from "../types/SnsEvent";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
+import * as mqtt from "mqtt";
 
 type ControllerMessage = {
   action: string;
@@ -16,8 +16,6 @@ type Rule = {
 const dynamoDbClient = new DynamoDBClient({});
 const dynamodb = DynamoDBDocumentClient.from(dynamoDbClient);
 const tableName = "homeRules";
-
-const sqsClient = new SQSClient({});
 
 module.exports.handler = async (event: SnsEvent) => {
   const records = event.Records;
@@ -56,30 +54,28 @@ async function findRulesToTrigger(originTopic: string, action: string) {
 }
 
 async function triggerRules(rules: Rule[]) {
-  for (const rule of rules) {
-    await publishSqsRule(rule.destinationTopic, rule.rulePayload);
-  }
-}
-
-async function publishSqsRule(destinationTopic: string, rulePayload: any) {
   try {
-    const command = new SendMessageCommand({
-      QueueUrl: "https://sqs.eu-central-1.amazonaws.com/584871003262/HomeControlRuleQueue",
-      MessageAttributes: {
-        Origin: {
-          DataType: 'String',
-          StringValue: 'Home-Control',
-        }
-      },
-      MessageBody: JSON.stringify({
-        destinationTopic,
-        rulePayload
-      })
-    });
+    const MQTT_URL = process.env.MQTT_URL ?? 'Undefined';
+    const mqttClient = await mqtt.connectAsync(MQTT_URL);
 
-    const result = await sqsClient.send(command);
-    console.log("Rule pushed to SQS: %s", JSON.stringify(result, null, 2));
+    console.log("INFO: MQTT Connection open")
 
+    for (const rule of rules) {
+      await mqttClient.publishAsync(
+        rule.destinationTopic,
+        rule.rulePayload
+      );
+
+      console.log(
+        "INFO: MQTT payload sent:  %s - %s",
+        rule.destinationTopic,
+        JSON.stringify(rule.rulePayload, null, 2)
+      );
+    }
+
+    await mqttClient.endAsync()
+
+    console.log("INFO: MQTT Client disconnected")
   } catch (err) {
     console.error(err);
   }

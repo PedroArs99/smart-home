@@ -13,11 +13,6 @@ provider:
             - dynamodb:Scan
           Resource:
             - { "Fn::GetAtt": ["HomeRulesTable", "Arn" ] }
-        - Effect: Allow
-          Action:
-            - sqs:sendmessage
-          Resource:
-            - { "Fn::GetAtt": ["HomeControlRuleQueue", "Arn"]}
 
 plugins:
   - serverless-plugin-typescript
@@ -35,6 +30,8 @@ functions:
           topicName: HomeEvent
   rule-trigger:
     handler: functions/rule-trigger.handler
+    environment:
+      MQTT_URL: mqtt://18.159.206.125:1883
     events:
       - sns:
           arn: !Ref HomeEventTopic
@@ -47,10 +44,6 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: HomeEvent
-    HomeControlRuleQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: HomeControlRuleQueue
     HomeRulesTable:
           Type: AWS::DynamoDB::Table
           Properties:
