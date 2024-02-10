@@ -21,13 +21,6 @@ package:
   individually: true
   
 functions:
-  sns-logger:
-    handler: functions/sns-logger.handler
-    events:
-      - sns:
-          arn: !Ref HomeEventTopic
-          displayName: Home device event pipeline
-          topicName: HomeEvent
   rule-trigger:
     handler: functions/rule-trigger.handler
     environment:
