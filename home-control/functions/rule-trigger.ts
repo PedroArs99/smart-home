@@ -1,11 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { SnsEvent } from "../types/SnsEvent";
+import { ApiGatewayEvent } from "../types/api-gateway-event";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import * as mqtt from "mqtt";
-
-type ControllerMessage = {
-  action: string;
-};
+import { jsonResponse } from "../types/json-response";
 
 type Rule = {
   id: string;
@@ -13,26 +10,37 @@ type Rule = {
   rulePayload: string;
 };
 
+type TriggerMessage = {
+  originTopic: string;
+  payload: Record<string, any>;
+};
+
 const dynamoDbClient = new DynamoDBClient({});
 const dynamodb = DynamoDBDocumentClient.from(dynamoDbClient);
 const tableName = "homeRules";
 
-module.exports.handler = async (event: SnsEvent) => {
-  const records = event.Records;
+module.exports.handler = async (event: ApiGatewayEvent) => {
+  const triggerMessage = JSON.parse(event.body) as TriggerMessage;
+  const originTopic = triggerMessage.originTopic;
+  const action = triggerMessage.payload["action"];
 
-  for(const record of records) {
-    const originTopic = record.Sns.Subject;
-    const message: ControllerMessage = JSON.parse(record.Sns.Message);
-    const action = message.action;
+  console.log(
+    "INFO: Received message from %s: %s",
+    triggerMessage.originTopic,
+    JSON.stringify(triggerMessage.payload)
+  );
 
-    console.log("Received message from %s", originTopic);
-
+  if (!action) {
+    console.log(
+      "INFO: There is any action available for the message received."
+    );
+  } else {
     const rules = await findRulesToTrigger(originTopic, action);
-
     console.log("%d rules found", rules.Count);
-
     await triggerRules(rules.Items as Rule[]);
-  };
+  }
+
+  return jsonResponse(200, undefined)
 };
 
 async function findRulesToTrigger(originTopic: string, action: string) {
@@ -55,16 +63,13 @@ async function findRulesToTrigger(originTopic: string, action: string) {
 
 async function triggerRules(rules: Rule[]) {
   try {
-    const MQTT_URL = process.env.MQTT_URL ?? 'Undefined';
+    const MQTT_URL = process.env.MQTT_URL ?? "Undefined";
     const mqttClient = await mqtt.connectAsync(MQTT_URL);
 
-    console.log("INFO: MQTT Connection open")
+    console.log("INFO: MQTT Connection open");
 
     for (const rule of rules) {
-      await mqttClient.publishAsync(
-        rule.destinationTopic,
-        rule.rulePayload
-      );
+      await mqttClient.publishAsync(rule.destinationTopic, rule.rulePayload);
 
       console.log(
         "INFO: MQTT payload sent:  %s - %s",
@@ -73,9 +78,9 @@ async function triggerRules(rules: Rule[]) {
       );
     }
 
-    await mqttClient.endAsync()
+    await mqttClient.endAsync();
 
-    console.log("INFO: MQTT Client disconnected")
+    console.log("INFO: MQTT Client disconnected");
   } catch (err) {
     console.error(err);
   }

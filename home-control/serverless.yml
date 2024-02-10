@@ -27,17 +27,12 @@ functions:
     environment:
       MQTT_URL: mqtt://18.159.206.125:1883
     events:
-      - sns:
-          arn: !Ref HomeEventTopic
-          displayName: Home device event pipeline
-          topicName: HomeEvent
+      - httpApi:
+          method: 'POST'
+          path: '/trigger'
 
 resources:
   Resources:
-    HomeEventTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: HomeEvent
     HomeRulesTable:
           Type: AWS::DynamoDB::Table
           Properties:
