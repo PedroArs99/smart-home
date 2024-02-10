@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MqttController } from './mqtt.controller';
-import { SnsService } from './sns.service';
+import { ControlService } from './control.service';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
-    })
+      isGlobal: true,
+    }),
+    HttpModule,
   ],
   controllers: [MqttController],
-  providers: [SnsService],
+  providers: [ControlService],
 })
 export class AppModule {}
