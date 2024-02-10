@@ -15,6 +15,7 @@ provider:
             - { "Fn::GetAtt": ["HomeRulesTable", "Arn" ] }
 
 plugins:
+  - serverless-offline
   - serverless-plugin-typescript
 
 package:
