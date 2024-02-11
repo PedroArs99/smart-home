@@ -1,9 +1,11 @@
-:root {
-
-}
-
 nav {
-  @apply p-6;
+  font-family: 'Anton';
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @apply p-6 gap-3 text-base-content;
 }
 
 .nav-title {
