@@ -5,16 +5,24 @@
 
 <div class="card w-80 lg:w-96 glass">
   <figure>
-    <img
-      src="assets/images/bedroom.png"
-      alt="Bedroom pic"  
-    />
+    <img src="assets/images/bedroom.png" alt="Bedroom pic" />
   </figure>
   <div class="card-body">
     <h2 class="card-title">Bedroom</h2>
     <div class="card-actions">
-      <button class="btn btn-primary grow">Room Light</button>
-      <button class="btn btn-secondary grow">Desk Light</button>
+      <button
+        class="btn btn-primary grow"
+        (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Controller', '1_single')"
+      >
+        Room Light
+      </button>
+      
+      <button
+        class="btn btn-secondary grow"
+        (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Controller', '2_single')"
+      >
+        Desk Light
+      </button>
     </div>
   </div>
 </div>
