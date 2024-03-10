@@ -11,7 +11,7 @@ type TriggerMessage = {
   providedIn: 'root',
 })
 export class TriggerService {
-  private apiUrl = 'https://7h1t7fmen5.execute-api.eu-central-1.amazonaws.com/';
+  private apiUrl = 'https://api.termite-home.xyz';
 
   constructor(private httpClient: HttpClient) {}
 

@@ -20,27 +20,36 @@ const dynamodb = DynamoDBDocumentClient.from(dynamoDbClient);
 const tableName = "homeRules";
 
 module.exports.handler = async (event: ApiGatewayEvent) => {
-  const triggerMessage = JSON.parse(event.body) as TriggerMessage;
-  const originTopic = triggerMessage.originTopic;
-  const action = triggerMessage.payload["action"];
+  try {
+    const triggerMessage = JSON.parse(event.body) as TriggerMessage;
+    const originTopic = triggerMessage.originTopic;
+    const action = triggerMessage.payload["action"];
 
-  console.log(
-    "INFO: Received message from %s: %s",
-    triggerMessage.originTopic,
-    JSON.stringify(triggerMessage.payload)
-  );
-
-  if (!action) {
     console.log(
-      "INFO: There is any action available for the message received."
+      "INFO: Received message from %s: %s",
+      triggerMessage.originTopic,
+      JSON.stringify(triggerMessage.payload)
     );
-  } else {
-    const rules = await findRulesToTrigger(originTopic, action);
-    console.log("%d rules found", rules.Count);
-    await triggerRules(rules.Items as Rule[]);
-  }
 
-  return jsonResponse(200, undefined)
+    if (!action) {
+      console.log(
+        "INFO: There is any action available for the message received."
+      );
+    } else {
+      const rules = await findRulesToTrigger(originTopic, action);
+      
+      console.log("%d rules found", rules.Count);
+      if (rules.Count === 0) {
+        return jsonResponse(404, undefined);
+      } else {
+        await triggerRules(rules.Items as Rule[]);
+        return jsonResponse(200, rules.Items);
+      }
+    }
+  } catch (e: any) {
+    console.error("ERROR: %s", e.message);
+    return jsonResponse(500, e);
+  }
 };
 
 async function findRulesToTrigger(originTopic: string, action: string) {
