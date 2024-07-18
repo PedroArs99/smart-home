@@ -33,7 +33,7 @@ module.exports.handler = async (event: ApiGatewayEvent) => {
 
     if (!action) {
       console.log(
-        "INFO: There is any action available for the message received."
+        "INFO: There is not an action available for the message received."
       );
     } else {
       const rules = await findRulesToTrigger(originTopic, action);
