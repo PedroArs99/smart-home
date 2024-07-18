@@ -17,3 +17,23 @@ nav {
 .nav-title {
   @apply text-4xl text-center;
 }
+
+.actions-group {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  @apply gap-3;
+}
+
+.brightness-group {
+  display: flex;
+  justify-content: space-around;
+
+  @apply gap-1;
+}
+
+.bulb-icon path {
+  fill: red;
+}

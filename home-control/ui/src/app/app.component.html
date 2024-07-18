@@ -10,19 +10,41 @@
   <div class="card-body">
     <h2 class="card-title">Bedroom</h2>
     <div class="card-actions">
-      <button
-        class="btn btn-primary grow"
-        (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Switch', '1_single')"
-      >
-        Room Light
-      </button>
-      
-      <button
-        class="btn btn-secondary grow"
-        (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Switch', '2_single')"
-      >
-        Desk Light
-      </button>
+      <div class="actions-group">
+        <button class="btn btn-primary grow" (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Switch', '1_single')">
+          Room Light
+        </button>
+        <div class="brightness-group">
+          <button class="btn btn-primary rounded-full" (click)="message('Bedroom_Light', { brightness: 32 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(47, 78, 81)" />
+          </button>
+          <button class="btn btn-primary rounded-full" (click)="message('Bedroom_Light', { brightness: 128 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(215,215,215);" />
+
+          </button>
+          <button class="btn btn-primary rounded-full" (click)="message('Bedroom_Light', { brightness: 254 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(255,255,255)" />
+          </button>
+        </div>
+      </div>
+
+      <div class="actions-group">
+        <button class="btn btn-secondary grow" (click)="trigger('zigbee2mqtt/Bedroom_Light_Wall_Switch', '2_single')">
+          Desk Light
+        </button>
+        <div class="brightness-group">
+          <button class="btn btn-secondary rounded-full" (click)="message('Bedroom_Light', { brightness: 32 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(114, 74, 13)" />
+          </button>
+          <button class="btn btn-secondary rounded-full" (click)="message('Bedroom_Light', { brightness: 128 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(215,215,215);" />
+        
+          </button>
+          <button class="btn btn-secondary rounded-full" (click)="message('Bedroom_Light', { brightness: 254 })">
+            <fa-icon [icon]="lightbulbIcon" size="lg" style="color: rgb(255,255,255)" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -15,6 +15,10 @@ export class TriggerService {
 
   constructor(private httpClient: HttpClient) {}
 
+  message(deviceFriendlyName: string, message: any) {
+    return this.httpClient.post(`${this.apiUrl}/topics/${deviceFriendlyName}`, message);
+  }
+
   trigger(originTopic: string, action: string): Observable<any> {
     const payload: TriggerMessage = {
       originTopic,

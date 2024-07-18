@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHouseSignal } from '@fortawesome/free-solid-svg-icons';
+import { faHouseSignal, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import { TriggerService } from './trigger.service';
 
 @Component({
@@ -13,13 +13,18 @@ import { TriggerService } from './trigger.service';
 })
 export class AppComponent {
   logoIcon = faHouseSignal;
+  lightbulbIcon = faLightbulb;
   title = 'Termite Home Control';
 
   constructor(private triggerService: TriggerService) {}
 
   trigger(originTopic: string, action: string) {
+    this.triggerService.trigger(originTopic, action).subscribe(response => console.log(response));
+  }
+
+  message(deviceFriendlyName: string, message: any) {
     this.triggerService
-      .trigger(originTopic, action)
-      .subscribe((response) => console.log(response));
+      .message(deviceFriendlyName, message)
+      .subscribe(response => console.log(response));
   }
 }
