@@ -1,0 +1,6 @@
+all:
+  hosts:
+    rpi:
+     ansible_host: raspberrypi.local
+     ansible_user: "{{ rpi_user }}"
+     ansible_password: "{{ rpi_password }}"
