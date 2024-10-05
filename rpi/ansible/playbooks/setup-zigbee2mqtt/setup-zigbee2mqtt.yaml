@@ -1,0 +1,64 @@
+---
+- name: Install Zigbee2MQTT
+  hosts: rpi
+  become: true
+  vars_files:
+    - ../../vault.yaml
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Zigbee2MQTT system Dependencies
+      apt:
+        name:
+          - nodejs
+          - npm
+          - git
+          - make
+          - g++
+          - gcc
+          - libsystemd-dev
+        state: present
+
+    - name: Create Zigbee2MQTT directory
+      file:
+        path: /opt/zigbee2mqtt
+        state: directory
+        owner: "{{rpi_user}}"
+        recurse: true
+    
+    - name: Clone Zigbee2MQTT repository
+      git:
+        repo: 'https://github.com/Koenkk/zigbee2mqtt.git'
+        dest: /opt/zigbee2mqtt
+        update: yes  # Ensures the repo is updated if it's already present
+    
+    - name: Install Zigbee2MQTT node dependencies
+      command: npm ci
+      args:
+        chdir: /opt/zigbee2mqtt
+    
+    - name: Build Zigbee2MQTT
+      command: npm run build
+      args:
+        chdir: /opt/zigbee2mqtt
+    
+    - name: Copy Zigbee2MQTT Configuration 
+      copy:
+        src: configuration.yaml
+        dest: /opt/zigbee2mqtt/data/configuration.yaml
+    
+    - name: Copy Zigbee2MQTT Sytemd service file
+      copy:
+        src: zigbee2mqtt.service
+        dest: /etc/systemd/system/zigbee2mqtt.service
+    
+    - name: Enable Zigbee2MQTT service to start at boot
+      systemd:
+        name: zigbee2mqtt
+        enabled: yes
+        state: started
+    
+
+    

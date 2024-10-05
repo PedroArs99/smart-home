@@ -28,8 +28,6 @@
         dest: /etc/mosquitto/mosquitto.conf
       notify: Restart Mosquitto
     
-    
-
   handlers:
     - name: Restart Mosquitto
       systemd:
