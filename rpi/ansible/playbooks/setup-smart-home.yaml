@@ -1,0 +1,2 @@
+---
+- import_playbook: setup-mosquitto/setup-mosquitto.yaml

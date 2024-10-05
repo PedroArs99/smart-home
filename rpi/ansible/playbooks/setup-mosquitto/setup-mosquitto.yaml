@@ -1,0 +1,37 @@
+---
+- name: Install Mosquitto
+  hosts: rpi
+  become: true
+  vars_files:
+    - ../../vault.yaml
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Mosquitto and Mosquitto clients
+      apt:
+        name:
+          - mosquitto
+          - mosquitto-clients
+        state: present
+
+    - name: Enable Mosquitto service to start at boot
+      systemd:
+        name: mosquitto
+        enabled: yes
+        state: started
+    
+    - name: Copy MQTT configuration file to the host
+      copy:
+        src: mosquitto.conf
+        dest: /etc/mosquitto/mosquitto.conf
+      notify: Restart Mosquitto
+    
+    
+
+  handlers:
+    - name: Restart Mosquitto
+      systemd:
+        name: mosquitto
+        state: restarted
