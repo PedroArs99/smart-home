@@ -1,0 +1,39 @@
+{
+    "bridge": {
+        "name": "Homebridge 65FD",
+        "username": "0E:A4:79:BB:65:FD",
+        "port": 51870,
+        "pin": "108-22-710",
+        "advertiser": "bonjour-hap"
+    },
+    "accessories": [],
+    "platforms": [
+        {
+            "name": "Config",
+            "port": 8581,
+            "platform": "config",
+            "theme": "cyan",
+            "lightingMode": "auto"
+        },
+        {
+            "mqtt": {
+                "base_topic": "zigbee2mqtt",
+                "server": "mqtt://localhost:1883",
+                "reject_unauthorized": false,
+                "keepalive": 60,
+                "version": 4,
+                "disable_qos": false
+            },
+            "defaults": {
+                "exclude": false
+            },
+            "exclude_grouped_devices": false,
+            "devices": [],
+            "_bridge": {
+                "username": "0E:1B:85:47:69:3A",
+                "port": 50886
+            },
+            "platform": "zigbee2mqtt"
+        }
+    ]
+}

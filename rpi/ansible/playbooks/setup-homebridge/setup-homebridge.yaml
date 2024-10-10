@@ -1,0 +1,34 @@
+---
+- name: Install Homebridge
+  hosts: rpi
+  become: true
+  vars_files:
+    - ../../vault.yaml
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Homebridge system Dependencies
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+    
+    - name: Install Homebridge with npm
+      command: npm i -g --unsafe-perm homebridge homebridge-config-ui-x homebridge-z2m
+
+    - name: Register Homebridge as service
+      command: hb-service install --user {{rpi_user}}
+    
+    - name: Copy Homebridge configuration to the host
+      copy:
+        src: homebridge
+        dest: /var/lib/homebridge
+
+
+
+
+
+    

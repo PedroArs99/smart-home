@@ -1,3 +1,4 @@
 ---
 - import_playbook: setup-mosquitto/setup-mosquitto.yaml
 - import_playbook: setup-zigbee2mqtt/setup-zigbee2mqtt.yaml
+- import_playbook: setup-homebridge/setup-homebridge.yaml
