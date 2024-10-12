@@ -1,0 +1,61 @@
+---
+- name: Install Cloudwatch Agent
+  hosts: rpi
+  become: true
+  vars:
+    aws_region: "eu-central-1"
+
+  vars_files:
+    - ../../vault.yaml
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Download the CloudWatch Agent package
+      get_url:
+        url: "https://amazoncloudwatch-agent.s3.amazonaws.com/debian/arm64/latest/amazon-cloudwatch-agent.deb"
+        dest: "/tmp/amazon-cloudwatch-agent.deb"
+
+    - name: Install the CloudWatch Agent package
+      apt:
+        deb: "/tmp/amazon-cloudwatch-agent.deb"
+        state: present
+
+    - name: Create CloudWatch Agent configuration directory
+      file:
+        path: "/opt/aws/amazon-cloudwatch-agent/etc"
+        state: directory
+        mode: "0755"
+
+    - name: Upload CloudWatch Agent configuration file
+      copy:
+        dest: "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+        src: "amazon-cloudwatch-agent.json"
+
+    - name: Install AWS CLI
+      apt:
+        name: awscli
+        state: present
+
+    - name: Configure AWS CLI with credentials
+      sudo: true
+      sudo_user: cwagent
+      shell: |
+        aws configure --profile AmazonCloudWatchAgent set aws_access_key_id {{ rpi_aws_access_key }} 
+        aws configure --profile AmazonCloudWatchAgent set aws_secret_access_key {{ rpi_aws_secret_key }}
+        aws configure --profile AmazonCloudWatchAgent set region {{ aws_region }}
+      
+
+    - name: Start the CloudWatch Agent service
+      shell: |
+        /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+        -a start \
+        -m onPremise \
+        -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json 
+
+    - name: Enable CloudWatch Agent service to start on boot
+      systemd:
+        name: amazon-cloudwatch-agent
+        enabled: yes
+        state: started
