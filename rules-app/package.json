@@ -1,5 +1,5 @@
 {
-  "name": "aws-connector",
+  "name": "rules-app",
   "version": "1.2.0",
   "description": "",
   "author": "",
@@ -29,8 +29,7 @@
     "axios": "^1.6.7",
     "mqtt": "^5.0.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1",
-    "uuid": "^9.0.0"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

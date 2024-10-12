@@ -5,26 +5,25 @@ import {
   MqttContext,
   Payload,
 } from '@nestjs/microservices';
-import { v4 as uuidv4 } from 'uuid';
-import { ControlService } from './control.service';
+import { RuleService } from './rule.service';
 
 @Controller()
 export class MqttController {
   private logger: Logger = new Logger(MqttController.name);
 
-  constructor(private controlService: ControlService) {}
+  constructor(private controlService: RuleService) {}
 
   @MessagePattern('zigbee2mqtt/+')
-  logMqttEvents(@Payload() data: any, @Ctx() context: MqttContext) {
+  logMqttEvents(
+    @Payload() data: Record<string, any>,
+    @Ctx() context: MqttContext,
+  ) {
     const topic = context.getTopic();
-    const traceId = uuidv4();
 
     this.logger.log(
-      `MQTT message received from'${topic}: ${JSON.stringify(
-        data,
-      )}' - Trace ID: ${traceId}`,
+      `MQTT message received from'${topic}: ${JSON.stringify(data)}'`,
     );
 
-    this.controlService.publishEvent(topic, data, traceId);
+    this.controlService.publishEvent(topic, data);
   }
 }

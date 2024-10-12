@@ -9,7 +9,7 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   const logger = new Logger('NestApplication');
 
-  const mqttUrl = configService.getOrThrow("MQTT_URL");
+  const mqttUrl = configService.getOrThrow('MQTT_URL');
   app.connectMicroservice({
     transport: Transport.MQTT,
     options: {
