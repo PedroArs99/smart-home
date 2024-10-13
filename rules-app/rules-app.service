@@ -1,0 +1,15 @@
+[Unit]
+Description="Smart Home Rules App"
+
+[Service]
+ExecStart=/usr/bin/npm run start:prod
+WorkingDirectory=/home/par/rules-app
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=MyApp
+Environment=NODE_ENV=production PORT=3000 MQTT_URL=mqtt://localhost:1883
+
+[Install]
+WantedBy=multi-user.target
