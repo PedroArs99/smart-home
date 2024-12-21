@@ -1,0 +1,20 @@
+{
+  "directive": {
+    "header": {
+      "messageId": "93301471-faba-4d04-ba3e-e5d29dd27c27",
+      "namespace": "Alexa.PowerController",
+      "name": "TurnOff",
+      "payloadVersion": "3",
+      "correlationToken": "SUdTVEs6AAE6AAg6eyJpZCI6IjQ5NjEzZTJlLWRiOTMtNGMzMy1iZGU1LTRjYWEzMWE5NzIxZSIsInVyaSI6Imh0dHBzOi8vZC1hY3JzLWV1LXAtN2MtOWRlZjE3NjMuZXUtd2VzdC0xLmFtYXpvbi5jb206OTQ0NCIsInNlc3Npb25JZCI6IjgzZGMxNGEzLTkzYjMtNDU4OS05MzdiLTg2M2M0YjM1ODE5NSJ9"
+    },
+    "endpoint": {
+      "scope": {
+        "type": "BearerToken",
+        "token": "Atza|IwEBIO9xy8iewvWfQeB0xNDj7tRduDsDLkimmiIgEuX3VMg-H_eeHIKTMYCezoiNafjZ9P4AE4Gnn1IjZvWzDVcMQpWeGn8_6_Ww_NJM2XI96Q4OOoLpB3UuLK5-s0NiQf_w6gkDzLDC9cRJg2lE0krOJRnyv3xqESvGKUfRKt5HWIZeVD-M6BywASjguaGwAPJV2xIIFWKi2x66grUwqNLRTwYetgd21p8sOYtTyltfVB8Ru2ArQBhvQfg2w6CZo6FmxkOh-JjLzBUub2H5co_0b5bF23hWSP2iAC9C0y9h4rgqhZGSjv4j9tzcLkAk6cWGscOK0JslsBPh_UBv-4hiHZjK"
+      },
+      "endpointId": "Desktop_Light",
+      "cookie": {}
+    },
+    "payload": {}
+  }
+}

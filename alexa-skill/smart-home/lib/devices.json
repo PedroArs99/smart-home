@@ -1,0 +1,53 @@
+{
+  "endpoints": [
+    {
+      "endpointId": "Desktop_Light",
+      "manufacturerName": "IKEA of Sweden",
+      "friendlyName": "Escritorio",
+      "description": "TRADFRI bulb E26/E27, color/white spectrum, globe, opal, 800/806/810 lm",
+      "displayCategories": ["LIGHT"],
+      "additionalAttributes": {
+        "manufacturer": "IKEA",
+        "model": "LED1924G9",
+        "serialNumber": "0x003c84fffe6902d1",
+        "firmwareVersion": "1.0.021",
+        "softwareVersion": "1.0.021",
+        "customIdentifier": "Desktop_Light"
+      },
+      "cookie": {},
+      "capabilities": [
+        {
+          "interface": "Alexa.PowerController",
+          "version": "3",
+          "type": "AlexaInterface",
+          "properties": {
+            "supported": [
+              {
+                "name": "powerState"
+              }
+            ],
+            "retrievable": true
+          }
+        },
+        {
+          "type": "AlexaInterface",
+          "interface": "Alexa.EndpointHealth",
+          "version": "3.2",
+          "properties": {
+            "supported": [
+              {
+                "name": "connectivity"
+              }
+            ],
+            "retrievable": true
+          }
+        },
+        {
+          "type": "AlexaInterface",
+          "interface": "Alexa",
+          "version": "3"
+        }
+      ]
+    }
+  ]
+}

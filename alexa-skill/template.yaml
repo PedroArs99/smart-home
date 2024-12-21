@@ -10,7 +10,7 @@ Globals:
   Function:
     Timeout: 3
     Tags:
-      awsApplication: arn:aws:resource-groups:eu-central-1:584871003262:group/smart-home/0begjxim4afpcmw1sf8ir8injm
+      awsApplication: arn:aws:resource-groups:eu-west-1:584871003262:group/smart-home/03fm0jmhftcefu2v15rw1g0i1i
 
 Resources:
   SmartHomeAlexaSkillFunction:
@@ -19,6 +19,10 @@ Resources:
       Architectures:
         - arm64
       CodeUri: smart-home/
+      Environment:
+        Variables:
+          REGION: !Ref "AWS::Region"
+          SQS_QUEUE_URL: !Ref SmartHomeMessageQueue
       Events:
         AlexaSkill:
           Type: AlexaSkill
@@ -27,6 +31,8 @@ Resources:
       Handler: app.lambdaHandler
       Policies: 
         - AWSLambdaBasicExecutionRole
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt SmartHomeMessageQueue.QueueName
       Runtime: nodejs22.x
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -36,11 +42,22 @@ Resources:
         Sourcemap: true
         EntryPoints: 
         - app.ts
+  SmartHomeMessageQueue:
+    Type: AWS::SQS::Queue
+    Properties: 
+      ContentBasedDeduplication: true
+      FifoQueue: true
+      Tags:
+        - Key: awsApplication
+          Value: arn:aws:resource-groups:eu-west-1:584871003262:group/smart-home/03fm0jmhftcefu2v15rw1g0i1i
 
 Outputs:
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
+  SmartHomeAlexaSkillFunction:
+    Description: "Smart Home Alexa Skill Controller Function ARN"
     Value: !GetAtt SmartHomeAlexaSkillFunction.Arn
-  HelloWorldFunctionIamRole:
+  SmartHomeAlexaSkillFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt SmartHomeAlexaSkillFunction.Arn
+  SmartHomeMessageQueue:
+    Description: "Message Queue to interact with the Rpi"
+    Value: !GetAtt SmartHomeMessageQueue.Arn

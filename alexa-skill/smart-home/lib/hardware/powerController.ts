@@ -1,0 +1,88 @@
+import { sendSqsMessage } from '../messaging/sqs';
+import { AlexaRequestEnvelope, AlexaResponse } from '../types';
+import { getRequestType } from '../util';
+
+type PowerControlRpiEvent = {
+  deviceName: string;
+  payload: {
+    state: 'ON' | 'OFF';
+  };
+};
+
+function prepareResponse(request: AlexaRequestEnvelope, powerResult: 'ON' | 'OFF'): AlexaResponse {
+  return {
+    event: {
+      context: {
+        properties: [
+          {
+            namespace: 'Alexa.PowerController',
+            name: 'powerState',
+            value: powerResult,
+            timeOfSample: new Date(), //retrieve from result.
+            uncertaintyInMilliseconds: 50,
+          },
+          {
+            namespace: 'Alexa.EndpointHealth',
+            name: 'connectivity',
+            value: {
+              value: 'OK',
+            },
+            timeOfSample: new Date(),
+            uncertaintyInMilliseconds: 0,
+          },
+        ],
+      },
+      header: {
+        namespace: 'Alexa',
+        name: 'Response',
+        messageId: request.directive.header.messageId + '-R',
+      },
+      endpoint: {
+        scope: {
+          type: 'BearerToken',
+          token: request.directive.endpoint.scope.token,
+        },
+        endpointId: request.directive.endpoint.endpointId,
+      },
+      payload: {},
+    },
+  };
+}
+
+export async function handlePowerControl(request: AlexaRequestEnvelope, context: any) {
+  let powerResult: 'ON' | 'OFF';
+
+  const requestMethod = request.directive.header.name;
+  const deviceName = request.directive.endpoint.endpointId;
+  const namespace = getRequestType(request);
+
+  if (requestMethod === 'TurnOn') {
+    const payload: PowerControlRpiEvent = {
+      deviceName,
+      payload: {
+        state: 'ON',
+      },
+    };
+
+    await sendSqsMessage(deviceName, namespace, payload);
+    powerResult = 'ON';
+  } else if (requestMethod === 'TurnOff') {
+    const payload: PowerControlRpiEvent = {
+      deviceName,
+      payload: {
+        state: 'OFF',
+      },
+    };
+
+    await sendSqsMessage(deviceName, namespace, payload);
+    powerResult = 'OFF';
+  } else {
+    console.warn('Power Request %s not supported', requestMethod);
+    return;
+  }
+
+  const response = prepareResponse(request, powerResult);
+
+  console.debug('Alexa.PowerController ', JSON.stringify(response));
+  context.succeed(response);
+}
