@@ -17,7 +17,7 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
 s3_prefix = "smart-home-alexa-skill"
-region = "eu-central-1"
+region = "eu-west-1"
 disable_rollback = true
 image_repositories = []
 
