@@ -6,3 +6,6 @@ vault.yaml
 
 ## SSH Keys
 *.pem
+
+## Mac OS
+.DS_Store
