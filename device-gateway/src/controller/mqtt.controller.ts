@@ -5,7 +5,7 @@ import {
   MqttContext,
   Payload,
 } from '@nestjs/microservices';
-import { RuleService } from './rule.service';
+import { RuleService } from '../service/rule.service';
 
 @Controller()
 export class MqttController {
@@ -24,6 +24,6 @@ export class MqttController {
       `MQTT message received from'${topic}: ${JSON.stringify(data)}'`,
     );
 
-    this.controlService.publishEvent(topic, data);
+    this.controlService.handleMqttEvent(topic, data);
   }
 }
