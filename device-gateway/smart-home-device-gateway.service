@@ -1,0 +1,15 @@
+[Unit]
+Description="Smart Home Device Gateway"
+
+[Service]
+ExecStart=/usr/bin/npm run start:prod
+WorkingDirectory=/home/par/smart-home/device-gateway
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=MyApp
+Environment=NODE_ENV=production PORT=3000 MQTT_URL=mqtt://localhost:1883 SQS_QUEUE_NAME=smart-home-alexa-skill-SmartHomeMessageQueue-9R6PAU14ahIu.fifo SQS_QUEUE_URL=https://sqs.eu-west-1.amazonaws.com/584871003262/smart-home-alexa-skill-SmartHomeMessageQueue-9R6PAU14ahIu.fifo
+
+[Install]
+WantedBy=multi-user.target
