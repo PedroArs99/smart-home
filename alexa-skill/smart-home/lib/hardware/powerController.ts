@@ -55,6 +55,7 @@ export async function handlePowerControl(request: AlexaRequestEnvelope, context:
   const requestMethod = request.directive.header.name;
   const deviceName = request.directive.endpoint.endpointId;
   const namespace = getRequestType(request);
+  const messageId = request.directive.header.messageId;
 
   if (requestMethod === 'TurnOn') {
     const payload: PowerControlRpiEvent = {
@@ -64,7 +65,7 @@ export async function handlePowerControl(request: AlexaRequestEnvelope, context:
       },
     };
 
-    await sendSqsMessage(deviceName, namespace, payload);
+    await sendSqsMessage(deviceName, namespace, messageId, payload);
     powerResult = 'ON';
   } else if (requestMethod === 'TurnOff') {
     const payload: PowerControlRpiEvent = {
@@ -74,7 +75,7 @@ export async function handlePowerControl(request: AlexaRequestEnvelope, context:
       },
     };
 
-    await sendSqsMessage(deviceName, namespace, payload);
+    await sendSqsMessage(deviceName, namespace, messageId, payload);
     powerResult = 'OFF';
   } else {
     console.warn('Power Request %s not supported', requestMethod);

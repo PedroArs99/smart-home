@@ -44,8 +44,7 @@ Resources:
         - app.ts
   SmartHomeMessageQueue:
     Type: AWS::SQS::Queue
-    Properties: 
-      ContentBasedDeduplication: true
+    Properties:
       FifoQueue: true
       Tags:
         - Key: awsApplication
