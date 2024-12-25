@@ -11,7 +11,7 @@ import { RuleService } from '../service/rule.service';
 export class MqttController {
   private logger: Logger = new Logger(MqttController.name);
 
-  constructor(private controlService: RuleService) {}
+  constructor(private ruleService: RuleService) {}
 
   @MessagePattern('zigbee2mqtt/+')
   logMqttEvents(
@@ -24,6 +24,6 @@ export class MqttController {
       `MQTT message received from'${topic}: ${JSON.stringify(data)}'`,
     );
 
-    this.controlService.handleMqttEvent(topic, data);
+    this.ruleService.handleMqttEvent(topic, data);
   }
 }

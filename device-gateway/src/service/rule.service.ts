@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { MqttProducerService } from './mqtt-producer.service';
+import { StatusDbClientService } from './statusDb-client.service';
 
 type AlexaDeviceMapping = {
   originDevice: string;
@@ -44,21 +44,15 @@ export class RuleService {
     },
   ];
 
-  constructor(private mqttProducerService: MqttProducerService) {}
+  constructor(
+    private mqttProducerService: MqttProducerService,
+    private statusDbClient: StatusDbClientService,
+  ) {}
 
   async handleMqttEvent(topic: string, payload: Record<string, any>) {
     try {
-      const triggeredRules = this.rules.filter(
-        (rule) => rule.fromTopic === topic && rule.action === payload.action,
-      );
-
-      this.logger.log(
-        `Found ${triggeredRules.length} rules to trigger for topic ${topic} with action payload: ${payload.action}`,
-      );
-
-      triggeredRules.forEach((rule) =>
-        this.mqttProducerService.sendMqttMessage(rule.toTopic, rule.payload),
-      );
+      this.triggerRules(topic, payload);
+      this.reportState(topic, payload);
     } catch (err) {
       this.logger.error(err);
     }
@@ -73,10 +67,39 @@ export class RuleService {
       this.logger.log(
         `Found Alexa Device mapping for ${device}. Forwarding payload: ${JSON.stringify(
           payload,
-        )} to ${deviceMapping.toTopic}.`,
+        )} to ${deviceMapping.toTopic}`,
       );
 
       this.mqttProducerService.sendMqttMessage(deviceMapping.toTopic, payload);
     }
+  }
+
+  private async reportState(topic: string, payload: Record<string, any>) {
+    try {
+      const prefix = 'zigbee2mqtt/';
+      const deviceName = topic.substring(prefix.length);
+
+      await this.statusDbClient.writeDeviceStatus(deviceName, payload);
+    } catch (e) {
+      this.logger.error(
+        `Failed to report state for topic: ${topic} with payload: ${JSON.stringify(
+          payload,
+        )}`,
+      );
+    }
+  }
+
+  private triggerRules(topic: string, payload: Record<string, any>) {
+    const triggeredRules = this.rules.filter(
+      (rule) => rule.fromTopic === topic && rule.action === payload.action,
+    );
+
+    this.logger.log(
+      `Found ${triggeredRules.length} rules to trigger for topic ${topic} with action payload: ${payload.action}`,
+    );
+
+    triggeredRules.forEach((rule) =>
+      this.mqttProducerService.sendMqttMessage(rule.toTopic, rule.payload),
+    );
   }
 }
