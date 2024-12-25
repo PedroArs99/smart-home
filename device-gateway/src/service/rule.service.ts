@@ -85,6 +85,7 @@ export class RuleService {
         `Failed to report state for topic: ${topic} with payload: ${JSON.stringify(
           payload,
         )}`,
+        (e as Error).message,
       );
     }
   }
