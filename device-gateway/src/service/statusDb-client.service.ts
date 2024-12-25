@@ -7,13 +7,10 @@ import { ConfigService } from '@nestjs/config';
 export class StatusDbClientService {
   private logger = new Logger(StatusDbClientService.name);
 
-  private region = this.configService.getOrThrow('AWS_REGION');
   private tableName = this.configService.getOrThrow(
     'DYNAMODB_STATUS_TABLE_NAME',
   );
-  private dynamoDbClient = new DynamoDBClient({
-    region: this.region,
-  });
+  private dynamoDbClient = new DynamoDBClient();
 
   constructor(private configService: ConfigService) {}
 
