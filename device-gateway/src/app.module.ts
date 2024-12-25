@@ -6,6 +6,7 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { SqsConsumerService } from './service/sqs-consumer.service';
 import { MqttProducerService } from './service/mqtt-producer.service';
+import { StatusDbClientService } from './service/statusDb-client.service';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { MqttProducerService } from './service/mqtt-producer.service';
     MqttProducerService,
     RuleService,
     SqsConsumerService,
+    StatusDbClientService,
   ],
 })
 export class AppModule {}
