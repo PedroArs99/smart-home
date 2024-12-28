@@ -11,6 +11,7 @@ export interface AlexaRequestEnvelope {
       namespace: AlexaNamespace;
       name: string;
       messageId: string;
+      correlationToken: string;
     };
     endpoint: {
       scope: {
@@ -32,10 +33,10 @@ interface ContextProperty {
 }
 
 export interface AlexaResponse {
+  context: {
+    properties: ContextProperty[];
+  };
   event: {
-    context: {
-      properties: ContextProperty[];
-    };
     endpoint: {
       scope: {
         type: 'BearerToken';
@@ -44,10 +45,16 @@ export interface AlexaResponse {
       endpointId: string;
     };
     header: {
-      namespace: AlexaNamespace;
+      correlationToken: string;
       name: string;
+      namespace: AlexaNamespace;
       messageId: string;
+      payloadVersion: '3';
     };
     payload: any;
   };
+}
+
+export interface DeviceStatus {
+  state: 'ON' | 'OFF';
 }

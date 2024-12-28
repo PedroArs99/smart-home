@@ -11,31 +11,33 @@ type PowerControlRpiEvent = {
 
 function prepareResponse(request: AlexaRequestEnvelope, powerResult: 'ON' | 'OFF'): AlexaResponse {
   return {
+    context: {
+      properties: [
+        {
+          namespace: 'Alexa.PowerController',
+          name: 'powerState',
+          value: powerResult,
+          timeOfSample: new Date(), //retrieve from result.
+          uncertaintyInMilliseconds: 1000,
+        },
+        {
+          namespace: 'Alexa.EndpointHealth',
+          name: 'connectivity',
+          value: {
+            value: 'OK',
+          },
+          timeOfSample: new Date(),
+          uncertaintyInMilliseconds: 0,
+        },
+      ],
+    },
     event: {
-      context: {
-        properties: [
-          {
-            namespace: 'Alexa.PowerController',
-            name: 'powerState',
-            value: powerResult,
-            timeOfSample: new Date(), //retrieve from result.
-            uncertaintyInMilliseconds: 50,
-          },
-          {
-            namespace: 'Alexa.EndpointHealth',
-            name: 'connectivity',
-            value: {
-              value: 'OK',
-            },
-            timeOfSample: new Date(),
-            uncertaintyInMilliseconds: 0,
-          },
-        ],
-      },
       header: {
+        correlationToken: request.directive.header.correlationToken,
         namespace: 'Alexa',
         name: 'Response',
         messageId: request.directive.header.messageId + '-R',
+        payloadVersion: '3',
       },
       endpoint: {
         scope: {
@@ -78,7 +80,7 @@ export async function handlePowerControl(request: AlexaRequestEnvelope, context:
     await sendSqsMessage(deviceName, namespace, messageId, payload);
     powerResult = 'OFF';
   } else {
-    console.warn('Power Request %s not supported', requestMethod);
+    console.debug('Power Request %s not supported', requestMethod);
     return;
   }
 
