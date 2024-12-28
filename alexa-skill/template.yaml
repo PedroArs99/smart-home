@@ -21,6 +21,7 @@ Resources:
       CodeUri: smart-home/
       Environment:
         Variables:
+          DB_TABLE_NAME: !Ref SmartHomeStatusDb
           REGION: !Ref "AWS::Region"
           SQS_QUEUE_URL: !Ref SmartHomeMessageQueue
       Events:
@@ -31,6 +32,8 @@ Resources:
       Handler: app.lambdaHandler
       Policies: 
         - AWSLambdaBasicExecutionRole
+        - DynamoDBReadPolicy:
+            TableName: !Ref SmartHomeStatusDb
         - SQSSendMessagePolicy:
             QueueName: !GetAtt SmartHomeMessageQueue.QueueName
       Runtime: nodejs22.x
