@@ -48,6 +48,55 @@
           "version": "3"
         }
       ]
+    },
+    {
+      "endpointId": "Cactus_Light",
+      "manufacturerName": "Tuya",
+      "friendlyName": "Cactus",
+      "description": "The Cactus I bought 3 years ago in Aliexpress hanging in my wall",
+      "displayCategories": ["LIGHT"],
+      "additionalAttributes": {
+        "manufacturer": "Tuya",
+        "model": "TS011F_plug_3",
+        "serialNumber": "0xa4c138b6be16c2d8",
+        "firmwareVersion": "1.0.5",
+        "softwareVersion": "1.0.5",
+        "customIdentifier": "Cactus_Light"
+      },
+      "cookie": {},
+      "capabilities": [
+        {
+          "interface": "Alexa.PowerController",
+          "version": "3",
+          "type": "AlexaInterface",
+          "properties": {
+            "supported": [
+              {
+                "name": "powerState"
+              }
+            ],
+            "retrievable": true
+          }
+        },
+        {
+          "type": "AlexaInterface",
+          "interface": "Alexa.EndpointHealth",
+          "version": "3.2",
+          "properties": {
+            "supported": [
+              {
+                "name": "connectivity"
+              }
+            ],
+            "retrievable": true
+          }
+        },
+        {
+          "type": "AlexaInterface",
+          "interface": "Alexa",
+          "version": "3"
+        }
+      ]
     }
   ]
 }
