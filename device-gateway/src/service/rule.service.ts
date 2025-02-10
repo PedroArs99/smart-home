@@ -23,6 +23,10 @@ export class RuleService {
       originDevice: 'Desktop_Light',
       toTopic: 'zigbee2mqtt/Desktop_Light/set',
     },
+    {
+      originDevice: 'Cactus_Light',
+      toTopic: 'zigbee2mqtt/Cactus_Light/set',
+    },
   ];
 
   private rules: RuleDefinition[] = [
