@@ -24,7 +24,7 @@ MQTT topic (zigbee2mqtt/#)
 
 | Piece | Responsibility |
 | --- | --- |
-| `main.ts` | Bootstraps the MQTT transport (`Transport.MQTT`) using settings from the config module |
+| `main.ts` | Creates one app context, reads MQTT settings from it, then attaches the `Transport.MQTT` transport via `connectMicroservice` |
 | `TopicController` | `@MessagePattern('zigbee2mqtt/#')` — parse each event, run the rule engine, publish every triggered action |
 | `MqttService` | Outbound broker connection; `publish(topic, payload, { retain })` |
 | `RuleEngine` | Abstract token; decides actions for a `(topic, payload)` pair |
@@ -46,7 +46,8 @@ cp .env.example .env   # adjust for your broker
 npm run start:dev
 ```
 
-The service has no HTTP surface — it is a pure microservice driven by MQTT.
+The service opens no HTTP port: `main.ts` calls `app.init()` rather than
+`app.listen()`, so it runs purely as an MQTT microservice.
 
 ## Configuration
 
