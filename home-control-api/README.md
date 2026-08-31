@@ -49,6 +49,25 @@ npm run start:dev
 The service opens no HTTP port: `main.ts` calls `app.init()` rather than
 `app.listen()`, so it runs purely as an MQTT microservice.
 
+### Docker
+
+```bash
+docker build -t home-control-api .
+docker run --rm --env-file .env home-control-api
+```
+
+The image is a multi-stage build on `node:22-alpine`: TypeScript is compiled in a
+build stage and only `dist/` plus production dependencies land in the final
+image, which runs as the non-root `node` user. No port is published.
+
+`docker-compose.yml` wires the same image to `.env` and, by default, points
+`MQTT_HOST` at `host.docker.internal` so the container can reach a broker running
+on the Docker host:
+
+```bash
+docker compose up --build
+```
+
 ## Configuration
 
 MQTT settings come from the environment via `@nestjs/config` (see `.env.example`):
