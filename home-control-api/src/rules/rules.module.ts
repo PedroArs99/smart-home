@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { NoopRuleEngine } from './noop-rule-engine';
+import { JsonRuleEngine } from './json-rule-engine';
 import { RuleEngine } from './rule-engine';
 
-/** Binds the active [RuleEngine] implementation. Swap [NoopRuleEngine] here. */
+/** Binds the active [RuleEngine] implementation. Swap [JsonRuleEngine] here. */
 @Module({
-  providers: [{ provide: RuleEngine, useClass: NoopRuleEngine }],
+  providers: [{ provide: RuleEngine, useClass: JsonRuleEngine }],
   exports: [RuleEngine],
 })
-export class RulesModule {}
+export class RulesModule { }

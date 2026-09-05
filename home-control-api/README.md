@@ -28,7 +28,7 @@ MQTT topic (zigbee2mqtt/#)
 | `TopicController` | `@MessagePattern('zigbee2mqtt/#')` — parse each event, run the rule engine, publish every triggered action |
 | `MqttService` | Outbound broker connection; `publish(topic, payload, { retain })` |
 | `RuleEngine` | Abstract token; decides actions for a `(topic, payload)` pair |
-| `NoopRuleEngine` | Default binding — resolves to no actions. Swap in `RulesModule`. |
+| `JsonRuleEngine` | Default binding — loads rules from a JSON file at startup. Swap in `RulesModule`. |
 
 Each matched rule chooses its own destination topic, so one event can fan out to
 several actions on different topics — e.g. an event on `zigbee2mqtt/switch`
@@ -38,11 +38,34 @@ The subscribed topic filter is the `DEVICE_EVENT_PATTERN` constant in
 `topic.controller.ts` (a `@MessagePattern` argument, so it cannot be an env var).
 `+` and `#` wildcards are supported; `MqttContext.getTopic()` yields the concrete topic.
 
+## Rules
+
+`JsonRuleEngine` loads a JSON array of rules once at startup from the path in
+`RULES_FILE` (default `rules.json`, resolved against the working directory). A
+missing file is logged and leaves the engine with no rules; an invalid file
+fails startup.
+
+Each rule has four fields:
+
+| Field | Meaning |
+| --- | --- |
+| `originTopic` | Exact topic the triggering event arrives on (e.g. `zigbee2mqtt/bedroom/switch`) |
+| `originAction` | Value the event payload's `action` field must equal (e.g. `single_1`) |
+| `destinationTopic` | Topic the command is published to |
+| `payload` | Command body — sent verbatim if a string, otherwise JSON-stringified |
+
+An optional `retain` boolean marks the published message as retained.
+
+When an event matches a rule's `originTopic` and its `action` equals
+`originAction`, `payload` is published to `destinationTopic`. Multiple rules can
+match one event. See [`rules.example.json`](rules.example.json).
+
 ## Running
 
 ```bash
 npm install
-cp .env.example .env   # adjust for your broker
+cp .env.example .env             # adjust for your broker
+cp rules.example.json rules.json # define your rules
 npm run start:dev
 ```
 
@@ -53,8 +76,12 @@ The service opens no HTTP port: `main.ts` calls `app.init()` rather than
 
 ```bash
 docker build -t home-control-api .
-docker run --rm --env-file .env home-control-api
+docker run --rm --env-file .env \
+  -v "$PWD/rules.json:/app/rules.json:ro" home-control-api
 ```
+
+The rules file is not baked into the image; mount it at the `RULES_FILE` path
+(default `/app/rules.json`).
 
 The image is a multi-stage build on `node:22-alpine`: TypeScript is compiled in a
 build stage and only `dist/` plus production dependencies land in the final

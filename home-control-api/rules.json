@@ -1,0 +1,8 @@
+[
+  {
+    "originTopic": "zigbee2mqtt/bedroom/switch",
+    "originAction": "2_single",
+    "destinationTopic": "zigbee2mqtt/living_room/plug/set",
+    "payload": { "state": "TOGGLE" }
+  }
+]
