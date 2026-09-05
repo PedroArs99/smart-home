@@ -1,0 +1,49 @@
+# Resource names and the `k8s-app` selector label.
+# Defaults to the release name when left empty.
+nameOverride: ""
+
+replicas: 1
+
+image:
+  repository: ghcr.io/pedroars99/smart-home/home-control-api
+  tag: 0.0.0
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets by name, e.g. [ghcr-pull] for private ghcr.io images.
+# The secret must already exist in the target namespace (see Registry/).
+imagePullSecrets:
+  - ghcr-pull
+
+# Port the container listens on.
+# port: 80
+
+# Extra environment variables, e.g.:
+#   env:
+#     - name: TZ
+#       value: Europe/Berlin
+env:
+  # Point the client at the in-cluster mosquitto service.
+  - name: MQTT_HOST
+    value: mosquitto.mosquitto.svc.cluster.local
+  - name: MQTT_PORT
+    value: "1883"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    # cpu: 250m
+    memory: 256Mi
+
+service:
+  port: 80
+
+ingress:
+  enabled: false
+  # className: nginx
+  # host: app.termite.space
+  # path: /
+
+nodeSelector:
+  kubernetes.io/os: linux
