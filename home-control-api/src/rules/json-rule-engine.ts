@@ -5,7 +5,7 @@ import { Rule } from './rule';
 import { RuleEngine } from './rule-engine';
 import { TriggeredAction } from './triggered-action';
 
-import rules from '../../rules.json'
+import rules from './rules.json'
 
 /**
  * [RuleEngine] backed by a JSON array of [Rule]s, loaded once at startup.
