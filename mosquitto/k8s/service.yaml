@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mosquitto
+  namespace: smart-home
+spec:
+  ports:
+    - name: mqtt
+      port: 1883
+      targetPort: 1883
+  selector:
+    k8s-app: mosquitto
