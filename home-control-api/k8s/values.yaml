@@ -24,7 +24,7 @@ imagePullSecrets:
 env:
   # Point the client at the in-cluster mosquitto service.
   - name: MQTT_HOST
-    value: mosquitto.mosquitto.svc.cluster.local
+    value: mosquitto.smart-home.svc.cluster.local
   - name: MQTT_PORT
     value: "1883"
 
