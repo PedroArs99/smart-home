@@ -1,0 +1,81 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zigbee2mqtt
+  namespace: smart-home
+spec:
+  replicas: 1
+  strategy:
+    # Only one pod can hold the USB dongle (/dev/zigbee) at a time, so the old
+    # pod must fully terminate before the new one starts.
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        k8s-app: zigbee2mqtt
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: initialize-config
+          image: koenkk/zigbee2mqtt:2.13.0
+          command:
+            - /bin/sh
+            - -c
+            - >-
+              if [ ! -f /app/data/configuration.yaml ]; then
+                cp /config/configuration.yaml /app/data/configuration.yaml;
+              fi;
+              chmod 0664 /app/data/configuration.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /app/data
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:2.13.0
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 8080
+              name: web
+          env:
+            - name: TZ
+              value: Europe/Berlin
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
+            - name: zigbee
+              mountPath: /dev/zigbee
+      volumes:
+        - name: config
+          configMap:
+            name: zigbee2mqtt-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-data
+        - name: udev
+          hostPath:
+            path: /run/udev
+            type: Directory
+        - name: zigbee
+          hostPath:
+            path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_fac04edee75fec118ef3395f25bfaa52-if00-port0
+            type: CharDevice
+      nodeSelector:
+        'kubernetes.io/os': linux

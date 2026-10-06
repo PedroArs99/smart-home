@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+  namespace: smart-home
+data:
+  configuration.yaml: |
+    homeassistant: false
+    permit_join: false
+    mqtt:
+      base_topic: zigbee2mqtt
+      server: mqtt://mosquitto.smart-home.svc.cluster.local:1883
+    serial:
+      adapter: zstack
+      port: /dev/zigbee
+    frontend:
+      enabled: true
+      port: 8080
+    advanced:
+      log_level: info
+      log_output:
+        - console
+    device_options: {}
+    devices: {}
+    groups: {}
